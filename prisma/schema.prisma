@@ -46,7 +46,8 @@ model Landlord {
   password    String
   avatar      String    @default("")
   role        UserRole  @default(VISITOR)
-  phone       String?   @default("")
+  phone       String   @default("")
+  email       String   @default("")
   description String?   @default("")
   createdAt   DateTime  @default(now())
   Review      Review[]
@@ -130,7 +131,8 @@ model ListingAbout {
 model Review {
   id         String    @id @default(uuid())
   content    String
-  rating     Int
+  rating     Rating?
+  ratingId   Int
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   Tenant     Tenant?   @relation(fields: [tenantId], references: [id])
@@ -139,6 +141,20 @@ model Review {
   landlordId String?
   Listing    Listing?  @relation(fields: [listingId], references: [id])
   listingId  String?
+}
+
+model Rating {
+  id            Int    @id @default(autoincrement())
+  cleanliness   Float // 干净卫生
+  description   Float // 如实描述
+  checkIn       Float // 入住便捷
+  communication Float // 沟通顺畅
+  location      Float // 地段优越
+  value         Float // 高性价比
+  totalScore    Float // 总评分
+  listingId     String
+  review        Review @relation(fields: [reviewId], references: [id])
+  reviewId      String @unique
 }
 
 model Order {
