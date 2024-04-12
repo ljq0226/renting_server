@@ -42,7 +42,7 @@ model Tenant {
 
 model Landlord {
   id          String    @id @default(uuid())
-  username    String    @default("visitor")
+  username    String    @default("landlord")
   password    String
   avatar      String    @default("")
   role        UserRole  @default(VISITOR)
