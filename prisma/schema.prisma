@@ -13,12 +13,159 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  LANDLORD
+  ADMIN
+  VISITOR
+}
 
-model User {
-  id        String    @id @default(uuid())
-  username  String    @default("visitor")
+enum PriceType {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+model Tenant {
+  id        String   @id @default(uuid())
+  username  String   @default("visitor")
   password  String
-  avatar    String    @default("")
-  role      String    @default("user")
-  createdAt DateTime  @default(now())
+  avatar    String   @default("")
+  role      UserRole @default(VISITOR)
+  phone     String
+  cardId    String?  @default("") // 身份证
+  gender    Int      @default(1)
+  createdAt DateTime @default(now())
+  Review    Review[]
+}
+
+model Landlord {
+  id          String    @id @default(uuid())
+  username    String    @default("visitor")
+  password    String
+  avatar      String    @default("")
+  role        UserRole  @default(VISITOR)
+  phone       String?   @default("")
+  description String?   @default("")
+  createdAt   DateTime  @default(now())
+  Review      Review[]
+  Listing     Listing[]
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  username  String   @default("visitor")
+  password  String
+  avatar    String   @default("")
+  role      UserRole @default(VISITOR)
+  createdAt DateTime @default(now())
+}
+
+model Listing {
+  id                String         @id @default(uuid())
+  title             String
+  description       String
+  price             Int
+  cover             String
+  images            String
+  about             ListingAbout?
+  keywords          String         @default("")
+  city              String // 城市
+  address           String
+  status            String
+  listingAboutId    String
+  priceType         PriceType      @default(MONTHLY)
+  rentType          Int // 类型 (0整租, 1合租)
+  roomCount         Int // 室数
+  bathroomCount     Int // 卫生间数
+  livingroomCount   Int // 厅数
+  houseType         String // 户型 (一室一厅一卫)
+  area              Int // 面积 (30m²)
+  direction         String // 朝向 (南, 东, 西, 北)
+  floor             Int //楼层  
+  totalFloor        Int // 总楼层
+  buildYear         Int // 建筑年份
+  bedroomFacilities String // 室内设施
+  advantage         String // 优势
+  availableFrom     DateTime // 可租赁的开始日期
+  availableUntil    DateTime // 可租赁的结束日期
+  nearbyInfo        String // 附近
+  isRetail          Boolean        @default(false) //是否零售
+  retailRecord      RetailRecord[] //零售记录
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  userId            String
+  Review            Review[]
+  Landlord          Landlord?      @relation(fields: [landlordId], references: [id])
+  landlordId        String?
+}
+
+model RetailRecord {
+  id         String   @id @default(uuid())
+  price      Int
+  tenantId   String
+  landlordId String
+  startTime  DateTime
+  endTime    DateTime
+  remarks    String?  @default("") //备注
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  listing    Listing  @relation(fields: [listingId], references: [id])
+  listingId  String
+}
+
+model ListingAbout {
+  id               String   @id @default(uuid())
+  about            String //房源概况
+  listingIntro     String //房源介绍
+  tenantPermission String //房客使用权限
+  others           String //其他注意事项
+  listing          Listing  @relation(fields: [listingId], references: [id])
+  listingId        String   @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Review {
+  id         String    @id @default(uuid())
+  content    String
+  rating     Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  Tenant     Tenant?   @relation(fields: [tenantId], references: [id])
+  tenantId   String?
+  Landlord   Landlord? @relation(fields: [landlordId], references: [id])
+  landlordId String?
+  Listing    Listing?  @relation(fields: [listingId], references: [id])
+  listingId  String?
+}
+
+model Order {
+  id           String    @id @default(uuid())
+  orderName    String // 订单名称
+  price        Int
+  rentType     Int // 0整租, 1合租
+  rentTimeType Int // 0短租 1长租
+  status       Int // 0待租 1已租 2已结束
+  tenantId     String
+  landlordId   String
+  contractId   String    @unique
+  contract     Contract?
+  startTime    DateTime //租住开始时间
+  endTime      DateTime //租住结束时间
+  createdTime  DateTime  @default(now())
+}
+
+model Contract {
+  id         String   @id @default(uuid())
+  url        String
+  title      String
+  status     Int      @default(0) // 合同状态(1契约内 0契约外)
+  createTime DateTime @default(now())
+  tenantId   String
+  landlordId String
+  endTime    DateTime
+  Order      Order    @relation(fields: [orderId], references: [id])
+  orderId    String   @unique
 }
