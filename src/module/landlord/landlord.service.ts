@@ -20,7 +20,7 @@ export class LandlordService {
     if (password !== res.password) {
       Error(401, '密码错误');
     }
-    return true;
+    return { ...res, password: '' };
   }
   async create({ username, password }: CreateLandlordDto): Promise<{
     id: string;
@@ -33,13 +33,21 @@ export class LandlordService {
     description: string;
     createdAt: Date;
   }> {
+    const user = await this.prisma.landlord.findFirst({
+      where: {
+        username,
+      },
+    });
+    if (user) {
+      Error(400, '用户名已存在');
+    }
     const newLandlord = await this.prisma.landlord.create({
       data: {
         username,
         password,
       },
     });
-    return newLandlord;
+    return { ...newLandlord, password: '' };
   }
 
   findAll() {

@@ -29,7 +29,7 @@ enum PriceType {
 
 model Tenant {
   id        String   @id @default(uuid())
-  username  String   @default("visitor")
+  username  String   @unique @default("visitor")
   password  String
   avatar    String   @default("")
   role      UserRole @default(VISITOR)
@@ -42,12 +42,12 @@ model Tenant {
 
 model Landlord {
   id          String    @id @default(uuid())
-  username    String    @default("landlord")
+  username    String    @unique @default("landlord")
   password    String
   avatar      String    @default("")
-  role        UserRole  @default(VISITOR)
-  phone       String   @default("")
-  email       String   @default("")
+  role        UserRole  @default(LANDLORD)
+  phone       String    @default("")
+  email       String    @default("")
   description String?   @default("")
   createdAt   DateTime  @default(now())
   Review      Review[]
@@ -56,10 +56,10 @@ model Landlord {
 
 model Admin {
   id        String   @id @default(uuid())
-  username  String   @default("visitor")
+  username  String   @unique @default("admin")
   password  String
   avatar    String   @default("")
-  role      UserRole @default(VISITOR)
+  role      UserRole @default(ADMIN)
   createdAt DateTime @default(now())
 }
 
