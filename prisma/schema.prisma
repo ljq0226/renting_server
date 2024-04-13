@@ -70,18 +70,17 @@ model Listing {
   price             Int
   cover             String
   images            String
-  about             ListingAbout?
+  isChecked         Boolean        @default(false)
   keywords          String         @default("")
   city              String // 城市
   address           String
-  status            String
-  listingAboutId    String
+  code              String //经纬度
+  status            Int            @default(0) // 是否已经在租
   priceType         PriceType      @default(MONTHLY)
   rentType          Int // 类型 (0整租, 1合租)
   roomCount         Int // 室数
   bathroomCount     Int // 卫生间数
   livingroomCount   Int // 厅数
-  houseType         String // 户型 (一室一厅一卫)
   area              Int // 面积 (30m²)
   direction         String // 朝向 (南, 东, 西, 北)
   floor             Int //楼层  
@@ -94,9 +93,12 @@ model Listing {
   nearbyInfo        String // 附近
   isRetail          Boolean        @default(false) //是否零售
   retailRecord      RetailRecord[] //零售记录
+  about             String         @default("") //房源概况
+  listingIntro      String         @default("") //房源介绍
+  tenantPermission  String         @default("") //房客使用权限
+  others            String         @default("") //其他注意事项
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
-  userId            String
   Review            Review[]
   Landlord          Landlord?      @relation(fields: [landlordId], references: [id])
   landlordId        String?
@@ -114,18 +116,6 @@ model RetailRecord {
   updatedAt  DateTime @updatedAt
   listing    Listing  @relation(fields: [listingId], references: [id])
   listingId  String
-}
-
-model ListingAbout {
-  id               String   @id @default(uuid())
-  about            String //房源概况
-  listingIntro     String //房源介绍
-  tenantPermission String //房客使用权限
-  others           String //其他注意事项
-  listing          Listing  @relation(fields: [listingId], references: [id])
-  listingId        String   @unique
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
 }
 
 model Review {
