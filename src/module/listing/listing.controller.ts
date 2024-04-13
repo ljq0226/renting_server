@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { ListingService } from './listing.service';
 
 @Controller('listing')
@@ -9,8 +9,11 @@ export class ListingController {
   create(@Body() dto: any) {
     return this.listingService.create(dto);
   }
-
-  @Get()
+  @Post('update_listing')
+  update(@Body() dto: any) {
+    return this.listingService.update(dto);
+  }
+  @Get('getall_listing')
   findAll() {
     return this.listingService.findAll();
   }
@@ -19,9 +22,8 @@ export class ListingController {
   findOne(@Param('id') id: string) {
     return this.listingService.findOne(+id);
   }
-
-  @Delete(':id')
+  @Post('delete_listing/:id')
   remove(@Param('id') id: string) {
-    return this.listingService.remove(+id);
+    return this.listingService.remove(id);
   }
 }
