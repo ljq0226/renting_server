@@ -14,7 +14,8 @@ export class LandlordController {
   login(@Body() dto: CreateLandlordDto) {
     return this.landlordService.login(dto);
   }
-  @Get()
+  //获取所有房东信息
+  @Get('getall_landlord')
   findAll() {
     return this.landlordService.findAll();
   }

@@ -9,18 +9,31 @@ import { Error } from 'src/lib';
 export class LandlordService {
   constructor(private prisma: PrismaService) {}
   async login({ username, password }: CreateLandlordDto) {
-    const res = await this.prisma.landlord.findFirst({
+    const admin = await this.prisma.admin.findFirst({
       where: {
         username,
       },
     });
-    if (!res) {
-      Error(401, '用户不存在');
+    //如果是管理员
+    if (admin) {
+      if (password !== admin.password) {
+        Error(401, '密码错误');
+      }
+      return { ...admin, password: '' };
+    } else {
+      const res = await this.prisma.landlord.findFirst({
+        where: {
+          username,
+        },
+      });
+      if (!res) {
+        Error(401, '用户不存在');
+      }
+      if (password !== res.password) {
+        Error(401, '密码错误');
+      }
+      return { ...res, password: '' };
     }
-    if (password !== res.password) {
-      Error(401, '密码错误');
-    }
-    return { ...res, password: '' };
   }
   async create({ username, password }: CreateLandlordDto): Promise<{
     id: string;
@@ -49,9 +62,19 @@ export class LandlordService {
     });
     return { ...newLandlord, password: '' };
   }
-
-  findAll() {
-    return `This action returns all landlord`;
+  //获取所有房东信息
+  async findAll() {
+    return await this.prisma.landlord.findMany({
+      select: {
+        id: true,
+        username: true,
+        avatar: true,
+        phone: true,
+        email: true,
+        description: true,
+        createdAt: true,
+      },
+    });
   }
 
   findOne(id: number) {

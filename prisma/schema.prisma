@@ -41,17 +41,16 @@ model Tenant {
 }
 
 model Landlord {
-  id          String    @id @default(uuid())
-  username    String    @unique @default("landlord")
+  id          String   @id @default(uuid())
+  username    String   @unique @default("landlord")
   password    String
-  avatar      String    @default("")
-  role        UserRole  @default(LANDLORD)
-  phone       String    @default("")
-  email       String    @default("")
-  description String?   @default("")
-  createdAt   DateTime  @default(now())
+  avatar      String   @default("")
+  role        UserRole @default(LANDLORD)
+  phone       String   @default("")
+  email       String   @default("")
+  description String?  @default("")
+  createdAt   DateTime @default(now())
   Review      Review[]
-  Listing     Listing[]
 }
 
 model Admin {
@@ -70,7 +69,7 @@ model Listing {
   price             Int
   cover             String
   images            String
-  isChecked         Boolean        @default(false)
+  isChecked         Int            @default(0) //0 未审核 1审核通过 2审核不通过
   keywords          String         @default("")
   city              String // 城市
   address           String
@@ -97,11 +96,10 @@ model Listing {
   listingIntro      String         @default("") //房源介绍
   tenantPermission  String         @default("") //房客使用权限
   others            String         @default("") //其他注意事项
+  landlordId        String //房东 id
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
   Review            Review[]
-  Landlord          Landlord?      @relation(fields: [landlordId], references: [id])
-  landlordId        String?
 }
 
 model RetailRecord {

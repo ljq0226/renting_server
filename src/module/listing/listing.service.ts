@@ -9,7 +9,6 @@ export class ListingService {
     const {
       id,
       price,
-      status,
       rentType,
       roomCount,
       bathroomCount,
@@ -25,7 +24,6 @@ export class ListingService {
       data: {
         ...dto,
         price: +price,
-        status: +status,
         rentType: +rentType,
         roomCount: +roomCount,
         bathroomCount: +bathroomCount,
@@ -41,7 +39,6 @@ export class ListingService {
   async create(dto: any) {
     const {
       price,
-      status,
       rentType,
       roomCount,
       bathroomCount,
@@ -49,12 +46,12 @@ export class ListingService {
       area,
       floor,
       buildYear,
+      landlordId,
     } = dto;
     await this.prisma.listing.create({
       data: {
         ...dto,
         price: +price,
-        status: +status,
         rentType: +rentType,
         roomCount: +roomCount,
         bathroomCount: +bathroomCount,
@@ -62,16 +59,47 @@ export class ListingService {
         area: +area,
         floor: +floor,
         buildYear: +buildYear,
+        status: 0,
+        landlordId,
       },
     });
     return true;
   }
-
+  //id房东的房源
+  async findAllById(landlordId: string) {
+    const allListing = await this.prisma.listing.findMany({
+      where: {
+        landlordId,
+      },
+    });
+    return { arr: allListing };
+  }
+  //所有房源
   async findAll() {
     const allListing = await this.prisma.listing.findMany();
     return { arr: allListing };
   }
-
+  //未审核的房源
+  async findAllUncheck() {
+    const allListing = await this.prisma.listing.findMany({
+      where: {
+        isChecked: 0,
+      },
+    });
+    return { arr: allListing };
+  }
+  //审查房源
+  async checkListing({ id, isSuccess }) {
+    await this.prisma.listing.update({
+      where: {
+        id,
+      },
+      data: {
+        isChecked: isSuccess ? 1 : 2,
+      },
+    });
+    return true;
+  }
   findOne(id: number) {
     return `This action returns a #${id} listing`;
   }
