@@ -37,6 +37,7 @@ export class ListingService {
   }
 
   async create(dto: any) {
+    console.log('dto', dto);
     const {
       price,
       rentType,

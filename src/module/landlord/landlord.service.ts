@@ -35,6 +35,7 @@ export class LandlordService {
       return { ...res, password: '' };
     }
   }
+  //注册
   async create({ username, password }: CreateLandlordDto): Promise<{
     id: string;
     username: string;
