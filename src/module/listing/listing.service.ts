@@ -37,7 +37,6 @@ export class ListingService {
   }
 
   async create(dto: any) {
-    console.log('dto', dto);
     const {
       price,
       rentType,
@@ -72,12 +71,19 @@ export class ListingService {
       where: {
         landlordId,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
     return { arr: allListing };
   }
   //所有房源
   async findAll() {
-    const allListing = await this.prisma.listing.findMany();
+    const allListing = await this.prisma.listing.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
     return { arr: allListing };
   }
   //未审核的房源
@@ -85,6 +91,9 @@ export class ListingService {
     const allListing = await this.prisma.listing.findMany({
       where: {
         isChecked: 0,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
     return { arr: allListing };

@@ -19,10 +19,10 @@ export class LandlordController {
   findAll() {
     return this.landlordService.findAll();
   }
-
-  @Get(':id')
+  //获取单个房东信息
+  @Get('/:id')
   findOne(@Param('id') id: string) {
-    return this.landlordService.findOne(+id);
+    return this.landlordService.findOne(id);
   }
 
   // @Patch(':id')

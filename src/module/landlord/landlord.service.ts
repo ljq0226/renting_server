@@ -78,8 +78,21 @@ export class LandlordService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} landlord`;
+  async findOne(id: string) {
+    return await this.prisma.landlord.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        username: true,
+        avatar: true,
+        phone: true,
+        email: true,
+        description: true,
+        createdAt: true,
+      },
+    });
   }
 
   // update(id: number, updateLandlordDto: UpdateLandlordDto) {

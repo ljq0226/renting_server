@@ -12,7 +12,7 @@ export class TenantService {
     return res;
   }
   async login({ username, password }: CreateTenantDto) {
-    const res = await this.prisma.landlord.findFirst({
+    const res = await this.prisma.tenant.findFirst({
       where: {
         username,
       },
@@ -26,7 +26,7 @@ export class TenantService {
     return { ...res, password: '' };
   }
   async register({ username, password }: CreateTenantDto): Promise<any> {
-    const user = await this.prisma.landlord.findFirst({
+    const user = await this.prisma.tenant.findFirst({
       where: {
         username,
       },
@@ -34,7 +34,7 @@ export class TenantService {
     if (user) {
       Error(400, '用户名已存在');
     }
-    const newuser = await this.prisma.landlord.create({
+    const newuser = await this.prisma.tenant.create({
       data: {
         username,
         password,
