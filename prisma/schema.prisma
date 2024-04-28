@@ -100,6 +100,8 @@ model Listing {
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
   Review            Review[]
+  Order             Order[]
+  Contract          Contract[]
 }
 
 model RetailRecord {
@@ -147,29 +149,36 @@ model Rating {
 
 model Order {
   id           String    @id @default(uuid())
-  orderName    String // 订单名称
+  ordername    String // 订单名称
   price        Int
-  rentType     Int // 0整租, 1合租
-  rentTimeType Int // 0短租 1长租
-  status       Int // 0待租 1已租 2已结束
+  priceType    PriceType @default(MONTHLY)
+  totalPrice   Int
+  status       Int // 0未支付 1已支付 2已取消
   tenantId     String
+  tenantName   String
   landlordId   String
-  contractId   String    @unique
+  landlordName String
+  contractId   String?   @unique
   contract     Contract?
+  listingId    String
+  listingTitle String
+  listing      Listing   @relation(fields: [listingId], references: [id])
   startTime    DateTime //租住开始时间
   endTime      DateTime //租住结束时间
   createdTime  DateTime  @default(now())
 }
 
 model Contract {
-  id         String   @id @default(uuid())
-  url        String
-  title      String
-  status     Int      @default(0) // 合同状态(1契约内 0契约外)
-  createTime DateTime @default(now())
-  tenantId   String
-  landlordId String
-  endTime    DateTime
-  Order      Order    @relation(fields: [orderId], references: [id])
-  orderId    String   @unique
+  id           String   @id @default(uuid())
+  url          String
+  title        String
+  status       Int      @default(0) // 合同状态(1契约内 0契约外)
+  createTime   DateTime @default(now())
+  tenantId     String
+  landlordId   String
+  listingId    String
+  listingTitle String
+  listing      Listing  @relation(fields: [listingId], references: [id])
+  Order        Order    @relation(fields: [orderId], references: [id])
+  orderId      String   @unique
 }

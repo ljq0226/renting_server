@@ -115,7 +115,6 @@ export class ListingService {
   }
 
   async remove(id: string) {
-    console.log('id', id);
     await this.prisma.listing.delete({
       where: {
         id: id,

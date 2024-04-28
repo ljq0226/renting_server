@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { TenantService } from './tenant.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 
@@ -14,8 +14,25 @@ export class TenantController {
   login(@Body() dto: CreateTenantDto) {
     return this.tenantService.login(dto);
   }
-  @Get()
+
+  //获取所有房东信息
+  @Get('getall_tenant')
   findAll() {
     return this.tenantService.findAll();
+  }
+  //获取单个房东信息
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.tenantService.findOne(id);
+  }
+  //修改房东信息
+  @Post('update_tenant/:id')
+  update(@Param('id') id: string, @Body() updateLandlordDto: any) {
+    return this.tenantService.update(id, updateLandlordDto);
+  }
+  //删除房东信息
+  @Post('delete_tenant/:id')
+  remove(@Param('id') id: string) {
+    return this.tenantService.remove(id);
   }
 }

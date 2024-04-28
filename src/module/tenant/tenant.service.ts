@@ -7,9 +7,8 @@ export class TenantService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(): Promise<any> {
-    const res = await this.prisma.tenant.findMany();
-    console.log('res', res);
-    return res;
+    const arr = await this.prisma.tenant.findMany();
+    return { arr };
   }
   async login({ username, password }: CreateTenantDto) {
     const res = await this.prisma.tenant.findFirst({
@@ -41,5 +40,35 @@ export class TenantService {
       },
     });
     return { ...newuser, password: '' };
+  }
+  // 获取所有租户
+  async getAllTenant() {
+    const res = await this.prisma.tenant.findMany();
+    return res;
+  }
+  async findOne(id: string) {
+    const res = await this.prisma.tenant.findUnique({
+      where: {
+        id,
+      },
+    });
+    return res;
+  }
+  async update(id: string, data: CreateTenantDto) {
+    const res = await this.prisma.tenant.update({
+      where: {
+        id,
+      },
+      data,
+    });
+    return res;
+  }
+  async remove(id: string) {
+    const res = await this.prisma.tenant.delete({
+      where: {
+        id,
+      },
+    });
+    return res;
   }
 }

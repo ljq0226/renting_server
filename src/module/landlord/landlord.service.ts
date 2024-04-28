@@ -65,7 +65,7 @@ export class LandlordService {
   }
   //获取所有房东信息
   async findAll() {
-    return await this.prisma.landlord.findMany({
+    const arr = await this.prisma.landlord.findMany({
       select: {
         id: true,
         username: true,
@@ -75,7 +75,11 @@ export class LandlordService {
         description: true,
         createdAt: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
+    return { arr };
   }
 
   async findOne(id: string) {
@@ -94,12 +98,27 @@ export class LandlordService {
       },
     });
   }
+  //修改房东信息
+  async update(id: string, { username, phone, email, description }: any) {
+    const res = await this.prisma.landlord.update({
+      where: {
+        id,
+      },
+      data: {
+        username,
+        phone,
+        email,
+        description,
+      },
+    });
+    return { ...res, password: '' };
+  }
 
-  // update(id: number, updateLandlordDto: UpdateLandlordDto) {
-  //   return `This action updates a #${id} landlord`;
-  // }
-
-  remove(id: number) {
-    return `This action removes a #${id} landlord`;
+  remove(id: string) {
+    return this.prisma.landlord.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

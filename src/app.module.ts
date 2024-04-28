@@ -5,6 +5,7 @@ import { TenantModule } from './module/tenant/tenant.module';
 import { LandlordModule } from './module/landlord/landlord.module';
 import { ListingModule } from './module/listing/listing.module';
 import { UploadModule } from './module/upload/upload.module';
+import { OrderModule } from './module/order/order.module';
 @Module({
   imports: [
     PrismaModule.forRoot({
@@ -16,6 +17,7 @@ import { UploadModule } from './module/upload/upload.module';
     LandlordModule,
     ListingModule,
     UploadModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [],

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { LandlordService } from './landlord.service';
 import { CreateLandlordDto } from './dto/create-landlord.dto';
 
@@ -24,6 +24,11 @@ export class LandlordController {
   findOne(@Param('id') id: string) {
     return this.landlordService.findOne(id);
   }
+  //修改房东信息
+  @Post('update_landlord/:id')
+  update(@Param('id') id: string, @Body() dto: any) {
+    return this.landlordService.update(id, dto);
+  }
 
   // @Patch(':id')
   // update(
@@ -33,8 +38,8 @@ export class LandlordController {
   //   return this.landlordService.update(+id, updateLandlordDto);
   // }
 
-  @Delete(':id')
+  @Post('delete_listing/:id')
   remove(@Param('id') id: string) {
-    return this.landlordService.remove(+id);
+    return this.landlordService.remove(id);
   }
 }
