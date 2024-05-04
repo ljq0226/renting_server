@@ -71,4 +71,22 @@ export class TenantService {
     });
     return res;
   }
+  async getTenantByUsername(username: string) {
+    const res = await this.prisma.tenant.findFirst({
+      where: {
+        username,
+      },
+    });
+    return res;
+  }
+  //updateTenant
+  async updateTenant(id: string, data: any) {
+    const res = await this.prisma.tenant.update({
+      where: {
+        id,
+      },
+      data,
+    });
+    return res;
+  }
 }

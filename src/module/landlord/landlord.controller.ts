@@ -42,4 +42,11 @@ export class LandlordController {
   remove(@Param('id') id: string) {
     return this.landlordService.remove(id);
   }
+
+  //更新房东信息
+  @Post('update_landlordinfo/:id')
+  updateLandlord(@Param('id') id: string, @Body() dto: any) {
+    console.log('dto', dto);
+    return this.landlordService.updateLandlord(id, dto);
+  }
 }

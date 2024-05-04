@@ -14,6 +14,11 @@ export class TenantController {
   login(@Body() dto: CreateTenantDto) {
     return this.tenantService.login(dto);
   }
+  //更新租户信息
+  @Post('update_tenant/:id')
+  updateTenant(@Param('id') id: string, @Body() dto: any) {
+    return this.tenantService.updateTenant(id, dto);
+  }
 
   //获取所有房东信息
   @Get('getall_tenant')

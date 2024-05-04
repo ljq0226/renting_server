@@ -121,4 +121,14 @@ export class LandlordService {
       },
     });
   }
+
+  async updateLandlord(id: string, data: any) {
+    const res = await this.prisma.landlord.update({
+      where: {
+        id,
+      },
+      data,
+    });
+    return res;
+  }
 }

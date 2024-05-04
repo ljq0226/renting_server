@@ -35,6 +35,8 @@ model Tenant {
   role      UserRole @default(VISITOR)
   phone     String   @default("")
   cardId    String   @default("") // 身份证
+  realname  String   @default("") //真实姓名
+  isUpdate  Boolean  @default(false) //是否已上传个人信息
   gender    Int      @default(1)
   createdAt DateTime @default(now())
   Review    Review[]
@@ -49,6 +51,10 @@ model Landlord {
   phone       String   @default("")
   email       String   @default("")
   description String?  @default("")
+  cardId      String   @default("") // 身份证
+  realname    String   @default("") //真实姓名
+  signature   String?  @default("") //个人电子签名
+  isUpdate    Boolean  @default(false) //是否已上传个人信息
   createdAt   DateTime @default(now())
   Review      Review[]
 }
@@ -90,7 +96,7 @@ model Listing {
   availableFrom     DateTime // 可租赁的开始日期
   availableUntil    DateTime // 可租赁的结束日期
   nearbyInfo        String // 附近
-  isRetail          Boolean        @default(false) //是否零售
+  isShortTermRental Boolean        @default(false) //是否短租
   retailRecord      RetailRecord[] //零售记录
   about             String         @default("") //房源概况
   listingIntro      String         @default("") //房源介绍
