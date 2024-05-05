@@ -83,20 +83,15 @@ export class LandlordService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.landlord.findUnique({
+    const one = await this.prisma.landlord.findUnique({
       where: {
         id,
       },
-      select: {
-        id: true,
-        username: true,
-        avatar: true,
-        phone: true,
-        email: true,
-        description: true,
-        createdAt: true,
-      },
     });
+    return {
+      ...one,
+      password: '',
+    };
   }
   //修改房东信息
   async update(id: string, { username, phone, email, description }: any) {

@@ -73,6 +73,7 @@ model Listing {
   title             String
   description       String
   price             Int
+  deposit           Int            @default(0)
   cover             String
   images            String
   isChecked         Int            @default(0) //0 未审核 1审核通过 2审核不通过
