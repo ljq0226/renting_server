@@ -35,11 +35,51 @@ export class ContractService {
     return `This action returns all contract`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} contract`;
+  async findOne(id: string) {
+    return await this.prisma.contract.findFirst({
+      where: {
+        id,
+      },
+    });
+  }
+  //getAllContract
+  async getAllContract() {
+    const arr = await this.prisma.contract.findMany();
+    return { arr };
   }
 
+  async findByLandlord(landlordId: string) {
+    const arr = await this.prisma.contract.findMany({
+      where: {
+        landlordId,
+      },
+    });
+    return { arr };
+  }
+  async findByTenantId(tenantId: string) {
+    const arr = await this.prisma.contract.findMany({
+      where: {
+        tenantId,
+      },
+    });
+    return { arr };
+  }
   remove(id: number) {
     return `This action removes a #${id} contract`;
+  }
+  // 更新合同
+  async updateContract(id: string, dto: any) {
+    const contract = await this.prisma.contract.update({
+      where: {
+        id,
+      },
+      data: {
+        ...dto,
+      },
+    });
+    if (!contract) {
+      Error(400, '无此合同');
+    }
+    return contract;
   }
 }

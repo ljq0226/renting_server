@@ -33,4 +33,14 @@ export class OrderController {
   confirm(@Param('id') id: string) {
     return this.orderService.confirmOrder(id);
   }
+  //更新订单
+  @Post('/update_order/:id')
+  update(@Param('id') id: string, @Body() dto: any) {
+    return this.orderService.updateOrder(id, dto);
+  }
+  //删除订单
+  @Post('/delete_order/:id')
+  delete(@Param('id') id: string) {
+    return this.orderService.deleteOrder(id);
+  }
 }

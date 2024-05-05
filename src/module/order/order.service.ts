@@ -101,4 +101,31 @@ export class OrderService {
       Error(400, '订单已支付');
     }
   }
+  //更新订单
+  async updateOrder(id: string, dto: any) {
+    const order = await this.prisma.order.update({
+      where: {
+        id,
+      },
+      data: {
+        ...dto,
+      },
+    });
+    if (!order) {
+      Error(400, '无此订单');
+    }
+    return order;
+  }
+  //删除订单
+  async deleteOrder(id: string) {
+    const order = await this.prisma.order.delete({
+      where: {
+        id,
+      },
+    });
+    if (!order) {
+      Error(400, '无此订单');
+    }
+    return order;
+  }
 }

@@ -128,8 +128,8 @@ model RetailRecord {
 model Review {
   id         String    @id @default(uuid())
   content    String
-  rating     Rating?
-  ratingId   Int
+  rating     Rating?   @relation(fields: [ratingId], references: [id])
+  ratingId   Int       @unique
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   Tenant     Tenant?   @relation(fields: [tenantId], references: [id])
@@ -141,7 +141,7 @@ model Review {
 }
 
 model Rating {
-  id            Int    @id @default(autoincrement())
+  id            Int     @id @default(autoincrement())
   cleanliness   Float // 干净卫生
   description   Float // 如实描述
   checkIn       Float // 入住便捷
@@ -150,8 +150,7 @@ model Rating {
   value         Float // 高性价比
   totalScore    Float // 总评分
   listingId     String
-  review        Review @relation(fields: [reviewId], references: [id])
-  reviewId      String @unique
+  Review        Review?
 }
 
 model Order {
