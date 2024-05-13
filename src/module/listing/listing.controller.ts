@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ListingService } from './listing.service';
 
 @Controller('listing')
@@ -17,9 +17,38 @@ export class ListingController {
   findAllById(@Param('id') id: string) {
     return this.listingService.findAllById(id);
   }
+  @Get('get_listing_byid/:id')
+  findById(@Param('id') id: string) {
+    return this.listingService.findById(id);
+  }
+  //根据搜索内容获取listing
+  @Get('getall_listing_bysearch')
+  findAllBySearch(
+    @Query('searchInput') searchInput: string,
+    @Query('price') price: string,
+    @Query('rentType') rentType: string,
+    @Query('roomCount') roomCount: string,
+    @Query('isShort') isShort: string,
+  ) {
+    return this.listingService.findAllBySearch(
+      searchInput == undefined ? '' : searchInput,
+      +price,
+      +rentType,
+      +roomCount,
+      +isShort,
+    );
+  }
   @Get('getall_listing')
   findAll() {
     return this.listingService.findAll();
+  }
+  @Get('getall_listing_short')
+  findAllShort() {
+    return this.listingService.findAllShort();
+  }
+  @Get('getall_listing_notshort')
+  findAllNotShort() {
+    return this.listingService.findAllNotShort();
   }
   //获取所有待审核房源
   @Get('getall_uncheck_listing')

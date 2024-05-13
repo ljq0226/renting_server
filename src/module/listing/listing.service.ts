@@ -77,9 +77,135 @@ export class ListingService {
     });
     return { arr: allListing };
   }
+  //id的房源
+  async findById(id: string) {
+    const listing = await this.prisma.listing.findUnique({
+      where: {
+        id,
+      },
+    });
+    return { listing };
+  }
+  //根据搜索内容获取 listing
+  async findAllBySearch(
+    search?: string,
+    price?: number,
+    rentType?: number,
+    roomCount?: number,
+    isShortTermRental?: number,
+  ) {
+    search = decodeURIComponent(search);
+    let priceFilter = {};
+    if (price < 1000) {
+      priceFilter = { lte: 1000 };
+    } else if (price > 3000) {
+      priceFilter = { gte: 3000 };
+    } else {
+      priceFilter = { gte: price - 250, lte: price + 250 };
+    }
+    // 构建查询规则
+    const rules: any = [
+      {
+        isShortTermRental: { equals: isShortTermRental ? true : false },
+      },
+    ];
+    if (price !== undefined && !Number.isNaN(price)) {
+      if (price >= 0) rules.push({ price: priceFilter });
+    }
+    if (rentType !== undefined && !Number.isNaN(rentType)) {
+      if (rentType >= 0) rules.push({ rentType: { equals: rentType } });
+    }
+    if (roomCount !== undefined && !Number.isNaN(roomCount)) {
+      if (roomCount >= 0) {
+        if (roomCount < 4) {
+          rules.push({ roomCount: { equals: roomCount } });
+        } else {
+          rules.push({ roomCount: { gte: roomCount } });
+        }
+      }
+    }
+
+    const allListing = await this.prisma.listing.findMany({
+      where: {
+        AND: [
+          {
+            OR: [
+              {
+                title: {
+                  contains: search,
+                },
+              },
+              {
+                city: {
+                  contains: search,
+                },
+              },
+              {
+                address: {
+                  contains: search,
+                },
+              },
+              {
+                keywords: {
+                  contains: search,
+                },
+              },
+            ],
+          },
+          ...rules,
+          {
+            isChecked: {
+              equals: 1,
+            },
+          },
+        ],
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    console.log('allListing', allListing);
+    return { arr: allListing };
+  }
   //所有房源
   async findAll() {
     const allListing = await this.prisma.listing.findMany({
+      where: {
+        isChecked: {
+          equals: 1,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    return { arr: allListing };
+  }
+
+  //findAllShort
+  async findAllShort() {
+    const allListing = await this.prisma.listing.findMany({
+      where: {
+        isShortTermRental: true,
+        isChecked: {
+          equals: 1,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    return { arr: allListing };
+  }
+  //findAllNotShort
+  async findAllNotShort() {
+    const allListing = await this.prisma.listing.findMany({
+      where: {
+        isShortTermRental: false,
+        isChecked: {
+          equals: 1,
+        },
+      },
       orderBy: {
         createdAt: 'desc',
       },

@@ -40,6 +40,9 @@ export class OrderService {
       include: {
         listing: true,
       },
+      orderBy: {
+        createdTime: 'desc',
+      },
     });
     return { arr };
   }
@@ -52,6 +55,9 @@ export class OrderService {
       include: {
         listing: true,
       },
+      orderBy: {
+        createdTime: 'desc',
+      },
     });
     return { arr };
   }
@@ -63,6 +69,9 @@ export class OrderService {
       },
       include: {
         listing: true,
+      },
+      orderBy: {
+        createdTime: 'desc',
       },
     });
     return { arr };
