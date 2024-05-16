@@ -88,6 +88,7 @@ export class ListingService {
   }
   //根据搜索内容获取 listing
   async findAllBySearch(
+    city: string,
     search?: string,
     price?: number,
     rentType?: number,
@@ -107,6 +108,9 @@ export class ListingService {
     const rules: any = [
       {
         isShortTermRental: { equals: isShortTermRental ? true : false },
+      },
+      {
+        city: { equals: city },
       },
     ];
     if (price !== undefined && !Number.isNaN(price)) {

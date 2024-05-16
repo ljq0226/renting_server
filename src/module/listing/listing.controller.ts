@@ -29,8 +29,10 @@ export class ListingController {
     @Query('rentType') rentType: string,
     @Query('roomCount') roomCount: string,
     @Query('isShort') isShort: string,
+    @Query('city') city: string,
   ) {
     return this.listingService.findAllBySearch(
+      city,
       searchInput == undefined ? '' : searchInput,
       +price,
       +rentType,
