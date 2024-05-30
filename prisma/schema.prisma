@@ -99,10 +99,10 @@ model Listing {
   nearbyInfo        String // 附近
   isShortTermRental Boolean        @default(false) //是否短租
   retailRecord      RetailRecord[] //零售记录
-  about             String         @default("") //房源概况
-  listingIntro      String         @default("") //房源介绍
-  tenantPermission  String         @default("") //房客使用权限
-  others            String         @default("") //其他注意事项
+  about             String         @db.LongText //房源概况
+  listingIntro      String         @db.LongText //房源介绍
+  tenantPermission  String         @db.LongText //房客使用权限
+  others            String         @db.LongText //其他注意事项
   landlordId        String //房东 id
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt

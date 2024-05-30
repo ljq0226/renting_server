@@ -174,11 +174,11 @@ export class ListingService {
   //所有房源
   async findAll() {
     const allListing = await this.prisma.listing.findMany({
-      where: {
-        isChecked: {
-          equals: 1,
-        },
-      },
+      // where: {
+      //   isChecked: {
+      //     equals: 1,
+      //   },
+      // },
       orderBy: {
         createdAt: 'desc',
       },

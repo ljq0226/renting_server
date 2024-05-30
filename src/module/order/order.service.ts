@@ -120,6 +120,18 @@ export class OrderService {
         ...dto,
       },
     });
+    const status = dto?.status;
+    if (status == 1) {
+      await this.prisma.listing.update({
+        where: {
+          id: order.listingId,
+        },
+        data: {
+          status: 1,
+        },
+      });
+    }
+
     if (!order) {
       Error(400, '无此订单');
     }
