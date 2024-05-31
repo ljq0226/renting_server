@@ -43,4 +43,13 @@ export class OrderController {
   delete(@Param('id') id: string) {
     return this.orderService.deleteOrder(id);
   }
+  //订单数据
+  @Get('/get_order_data/:id')
+  getOrderData(@Param('id') id: string) {
+    return this.orderService.getOrderData(id);
+  }
+  @Get('/get_order_data_admin')
+  getOrderData2() {
+    return this.orderService.getOrderData2();
+  }
 }

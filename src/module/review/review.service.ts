@@ -54,12 +54,16 @@ export class ReviewService {
   }
   //更新评论
   async updateReview(id: string, data: any) {
+    const { content } = data;
     const review = await this.prisma.review.update({
       where: {
         id,
       },
-      data,
+      data: {
+        content,
+      },
     });
+    console.log('review', review);
     return review;
   }
   //获取评论

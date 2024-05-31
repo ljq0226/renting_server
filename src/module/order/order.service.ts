@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import { Error } from 'src/lib';
+import { Error, getPreviousMonths } from 'src/lib';
 
 @Injectable()
 export class OrderService {
@@ -148,5 +148,96 @@ export class OrderService {
       Error(400, '无此订单');
     }
     return order;
+  }
+  //订单数据
+  async getOrderData(id: string) {
+    const ordersPrice = await this.prisma.order.findMany({
+      where: {
+        landlordId: id,
+        status: 1,
+      },
+      select: {
+        totalPrice: true,
+        createdTime: true,
+      },
+    });
+    const allPrice = ordersPrice.reduce((acc, cur) => {
+      return acc + cur.totalPrice;
+    }, 0);
+    const listingsCount2 = ordersPrice?.length;
+    const commentsCount = await this.prisma.review.count({
+      where: {
+        landlordId: id,
+      },
+    });
+    //获取现在的月份
+    const now = new Date();
+    const arr = getPreviousMonths(`${now.getFullYear()}-${now.getMonth() + 1}`);
+    const chartData = arr.map((item) => {
+      return {
+        date: item,
+        count: 0,
+      };
+    });
+    ordersPrice.forEach((item) => {
+      const date = item.createdTime.toISOString().slice(0, 7);
+      const index = chartData.findIndex((item) => item.date === date);
+      if (index !== -1) {
+        chartData[index].count += item.totalPrice;
+      }
+    });
+    const listingsCount = await this.prisma.listing.count({
+      where: {
+        landlordId: id,
+      },
+    });
+    return {
+      allPrice,
+      listingsCount,
+      listingsCount2,
+      commentsCount,
+      chartData,
+    };
+  }
+
+  async getOrderData2() {
+    const ordersPrice = await this.prisma.order.findMany({
+      where: {
+        status: 1,
+      },
+      select: {
+        totalPrice: true,
+        createdTime: true,
+      },
+    });
+    const allPrice = ordersPrice.reduce((acc, cur) => {
+      return acc + cur.totalPrice;
+    }, 0);
+    const listingsCount2 = ordersPrice?.length;
+    const commentsCount = await this.prisma.review.count();
+    //获取现在的月份
+    const now = new Date();
+    const arr = getPreviousMonths(`${now.getFullYear()}-${now.getMonth() + 1}`);
+    const chartData = arr.map((item) => {
+      return {
+        date: item,
+        count: 0,
+      };
+    });
+    ordersPrice.forEach((item) => {
+      const date = item.createdTime.toISOString().slice(0, 7);
+      const index = chartData.findIndex((item) => item.date === date);
+      if (index !== -1) {
+        chartData[index].count += item.totalPrice;
+      }
+    });
+    const listingsCount = await this.prisma.listing.count();
+    return {
+      allPrice,
+      listingsCount,
+      listingsCount2,
+      commentsCount,
+      chartData,
+    };
   }
 }
