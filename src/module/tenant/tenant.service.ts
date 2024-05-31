@@ -10,6 +10,25 @@ export class TenantService {
     const arr = await this.prisma.tenant.findMany();
     return { arr };
   }
+  async findAllById(id: string): Promise<any> {
+    //id 为房东 id ，找到所有合同下 房东 id 为 id的租户 id,更具这些 id 返回所有租户信息数组 arr
+    const tenantIds = await this.prisma.contract.findMany({
+      where: {
+        landlordId: id,
+      },
+      select: {
+        tenantId: true,
+      },
+    });
+    const arr = await this.prisma.tenant.findMany({
+      where: {
+        id: {
+          in: tenantIds.map((item) => item.tenantId),
+        },
+      },
+    });
+    return { arr };
+  }
   async login({ username, password }: CreateTenantDto) {
     const res = await this.prisma.tenant.findFirst({
       where: {

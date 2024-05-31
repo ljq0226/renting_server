@@ -19,10 +19,61 @@ export class OrderService {
     if (!tenant) {
       Error(400, '无用户名为' + tenantName + '的租户');
     }
+    const now = new Date();
+    console.log('now', now);
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Shanghai', // 替换为你的时区
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZoneName: 'short',
+    });
+
+    const formattedDate = formatter.format(now);
+    // console.log(Date(formattedDate));
+    const matches = formattedDate.match(
+      /(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2}):(\d{2}) (PM|AM) GMT([+-]\d{1,2})/,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, month, day, year, hour, minute, second, period, offset] = matches;
+
+    // 将12小时制转换为24小时制
+    let hours24 = parseInt(hour);
+    if (period === 'PM' && hours24 < 12) {
+      hours24 += 12;
+    }
+    if (period === 'AM' && hours24 === 12) {
+      hours24 = 0;
+    }
+
+    // 构造本地时间的 Date 对象
+    const localDate = new Date(
+      parseInt(year),
+      parseInt(month) - 1, // 月份从0开始
+      parseInt(day),
+      hours24,
+      parseInt(minute),
+      parseInt(second),
+    );
+
+    // 获取时区偏移（分钟）
+    const timezoneOffset = localDate.getTimezoneOffset();
+    const targetOffset = parseInt(offset) * 60;
+    const diff = targetOffset - timezoneOffset;
+
+    // 调整到目标时区时间
+    const targetDate = new Date(localDate.getTime() + diff * 60 * 1000);
+
+    console.log('Parsed Date:', targetDate);
     const newOrder = await this.prisma.order.create({
       data: {
         ...dto,
         tenantId: tenant.id,
+        createdTime: targetDate,
       },
     });
     return await this.prisma.order.findUnique({

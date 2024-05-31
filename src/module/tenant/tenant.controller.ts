@@ -20,10 +20,14 @@ export class TenantController {
     return this.tenantService.updateTenant(id, dto);
   }
 
-  //获取所有房东信息
-  @Get('getall_tenant')
+  //获取所有租客信息
+  @Get('getall_tenant_admin')
   findAll() {
     return this.tenantService.findAll();
+  }
+  @Get('getall_tenant/:id')
+  findAll2(@Param('id') id: string) {
+    return this.tenantService.findAllById(id);
   }
   //获取单个房东信息
   @Get(':id')
